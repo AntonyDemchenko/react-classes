@@ -8,22 +8,15 @@ class Store {
   }
 
   addItemToStore(data) {
-    // this.setState(this.state.items.push({ title: data.title }));
     console.log(this.state);
-    // this.setState({ items: this.state.items.push({ title: data.title }) });
-    this.state = this.state.push({ title: data.title });
 
-    console.log(this.state[0]);
+    let newState = this.state;
+    newState.push({ title: data.title });
+
+    this.state = newState;
+
+    console.log(this.state);
   }
-
-  //   componentDidMount() {
-  // console.log("done");
-
-  //   }
-
-  //   render() {
-  //     return <></>;
-  //   }
 }
 
 const store = new Store();
