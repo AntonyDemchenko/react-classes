@@ -1,0 +1,48 @@
+.tasks.active {
+  display: flex;
+  width: 100%;
+}
+
+.tasks {
+  display: none;
+  position: relative;
+}
+
+.todos-tasks {
+  width: 100%;
+}
+
+.check-all {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: -70px;
+  margin: 10px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: #fff;
+}
+
+.check-all.active p {
+  color: rgba(0, 0, 0, 0.604) !important;
+}
+
+.chek-all__arrow {
+  transform: rotate(90deg);
+  font-size: 20px;
+  color: #3333;
+}
+
+/* .chek-all__arrow.active {
+      color: rgba(0, 0, 0, 0.604) ;
+  } */
+
+.todos-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+}
