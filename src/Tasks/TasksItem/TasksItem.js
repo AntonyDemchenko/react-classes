@@ -26,6 +26,7 @@ class TasksItem extends react.Component {
         <input
           className="todos__toggle"
           type="checkbox"
+          checked={this.state.item.completed}
           onChange={(e) => {
             this.handleOnChange(e);
             e.stopPropagation();

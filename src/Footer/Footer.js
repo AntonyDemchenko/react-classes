@@ -1,6 +1,7 @@
 import react from "react";
 import "./Footer.css";
 import Filter from "./Filter/Filter";
+import emitter from "../EventEmitter";
 
 class Footer extends react.Component {
   constructor(props) {
@@ -16,6 +17,10 @@ class Footer extends react.Component {
     return todosCount.length;
   }
 
+  deleteAllCheckedTodos() {
+    emitter.emit("event:delete-all-checked");
+  }
+
   render() {
     return (
       <footer className="footer active">
@@ -27,7 +32,12 @@ class Footer extends react.Component {
           left
         </span>
         <Filter />
-        <button className="delete-checked">Clear completed</button>
+        <button
+          className="delete-checked"
+          onClick={(e) => this.deleteAllCheckedTodos()}
+        >
+          Clear completed
+        </button>
       </footer>
     );
   }

@@ -9,6 +9,7 @@ class Store {
 
   addItemToStore(data) {
     let newState = this.state;
+    // console.log(newState);
     newState.push({ title: data.title, id: uuidv4(), completed: false });
 
     this.state = newState;
@@ -36,6 +37,32 @@ class Store {
 
     emitter.emit("event: update-store");
   }
+
+  checkAllTodos() {
+    let newState = this.state;
+    if (newState.every((item) => item.completed === true)) {
+      newState = newState.map((item) => {
+        item.completed = false;
+        return item;
+      });
+    } else {
+      newState = newState.map((item) => {
+        item.completed = true;
+        return item;
+      });
+    }
+
+    this.state = newState;
+    // console.log(this.state);
+    emitter.emit("event: update-store", {});
+  }
+
+  deleteAllCheckedTodos() {
+    let newState = this.state;
+    newState = newState.filter((item) => item.completed === false);
+    this.state = newState;
+    emitter.emit("event: update-store");
+  }
 }
 
 const store = new Store();
@@ -50,6 +77,12 @@ emitter.subscribe("event:change-checkbox", (data) =>
   store.changeCompletedStatusOfItem(data.id)
 );
 
-// emitter.subscribe("event: update-store");
+emitter.subscribe("event:change-all-checkboxes", (data) =>
+  store.checkAllTodos()
+);
+
+emitter.subscribe("event:delete-all-checked", (data) =>
+  store.deleteAllCheckedTodos()
+);
 
 export default store;
