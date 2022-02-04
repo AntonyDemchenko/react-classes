@@ -7,12 +7,12 @@ import store from "./Store/Store";
 
 class App extends react.Component {
   render() {
+    // console.log(store.state);
     return (
       <div className="container">
-        {/* <store /> */}
         <Input />
-        <Tasks />
-        <Footer />
+        <Tasks props={store.state} />
+        <Footer props={store.state} />
       </div>
     );
   }

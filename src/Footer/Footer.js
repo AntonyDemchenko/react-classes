@@ -2,7 +2,11 @@ import react from "react";
 import "./Footer.css";
 import Filter from "./Filter/Filter";
 class Footer extends react.Component {
-  state = {};
+  constructor(props) {
+    super(props);
+    // console.log(props.props);
+    this.state = { todos: props.props };
+  }
   render() {
     return (
       <footer className="footer active">
