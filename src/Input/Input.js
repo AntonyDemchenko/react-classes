@@ -13,7 +13,6 @@ class Input extends react.Component {
   }
 
   addNewItem(data) {
-    // console.log(data.title);
     data.title = " ";
     this.setState({
       inputValue: " ",
@@ -28,10 +27,8 @@ class Input extends react.Component {
 
   handleClick(e) {
     if (e.keyCode === 13 && e.target.value.trim()) {
-      // console.log("this is:", e.target.value);
       emitter.emit("event:add-item", {
         title: e.target.value,
-        // id: this.addItem().getAttribute('item-id'),
       });
     }
   }

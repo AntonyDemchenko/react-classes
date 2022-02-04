@@ -6,14 +6,7 @@ import emitter from "../EventEmitter";
 class Tasks extends react.Component {
   constructor(props) {
     super(props);
-    // console.log(props.props);
-    this.state = { todos: props.props };
-  }
-
-  componentDidMount() {
-    emitter.subscribe("event:add-item", (data) =>
-      this.setState({ todos: this.props.props })
-    );
+    this.state = {};
   }
 
   render() {
@@ -24,7 +17,7 @@ class Tasks extends react.Component {
         </button>
         <div className="todos-tasks">
           <ul className="todos-list">
-            {this.state.todos.map((item) => (
+            {this.props.todos.map((item) => (
               <TasksItem todo={item} key={item.id} />
             ))}
           </ul>
