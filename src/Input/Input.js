@@ -5,7 +5,7 @@ import emitter from "../EventEmitter";
 class Input extends react.Component {
   constructor() {
     super();
-    this.state = { inputValue: " " };
+    this.state = { inputValue: "" };
   }
 
   componentDidMount() {

@@ -10,7 +10,7 @@ class Footer extends react.Component {
   }
 
   setCountActiveTodos() {
-    let allTodos = this.props.todos;
+    let allTodos = this.props.data.todos;
 
     let todosCount = allTodos.filter((item) => item.completed === false);
 
@@ -23,7 +23,11 @@ class Footer extends react.Component {
 
   render() {
     return (
-      <footer className="footer active">
+      <footer
+        className={
+          this.props.data.todos.length === 0 ? "footer" : "footer active"
+        }
+      >
         <span className="todo-count">
           <span className="todo-count__number">
             {this.setCountActiveTodos() + " "}

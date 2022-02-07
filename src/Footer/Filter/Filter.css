@@ -2,16 +2,29 @@
   display: flex;
   list-style: none;
 }
+.filter-btns li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 3px;
+}
 
 .filter-btns li.selected {
   border: 1px solid;
   border-color: rgba(175, 47, 47, 0.2) !important;
+  margin: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .filter-btns li button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   color: inherit;
-  margin: 3px;
+
   padding: 3px 7px;
   text-decoration: none;
   border: 1px solid transparent;

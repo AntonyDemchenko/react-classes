@@ -10,20 +10,26 @@ class App extends react.Component {
   constructor(props) {
     super(props);
 
-    this.state = { todos: store.state };
+    this.state = {
+      todos: store.state.todos,
+      filterType: store.state.filterType,
+    };
   }
 
   componentDidMount() {
     emitter.subscribe("event: update-store", (data) => {
-      this.setState({ todos: store.state });
+      this.setState({
+        todos: store.state.todos,
+        filterType: store.state.filterType,
+      });
     });
   }
   render() {
     return (
       <div className="container">
         <Input />
-        <Tasks todos={store.state} />
-        <Footer todos={store.state} />
+        <Tasks data={this.state} />
+        <Footer data={this.state} />
       </div>
     );
   }
