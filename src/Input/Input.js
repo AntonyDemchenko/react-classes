@@ -15,7 +15,7 @@ class Input extends react.Component {
   addNewItem(data) {
     data.title = " ";
     this.setState({
-      inputValue: " ",
+      inputValue: "",
     });
   }
 

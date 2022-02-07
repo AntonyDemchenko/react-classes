@@ -10,9 +10,9 @@ class Footer extends react.Component {
   }
 
   setCountActiveTodos() {
-    let allTodos = this.props.data.todos;
+    const allTodos = this.props.data.todos;
 
-    let todosCount = allTodos.filter((item) => item.completed === false);
+    const todosCount = allTodos.filter((item) => item.completed === false);
 
     return todosCount.length;
   }

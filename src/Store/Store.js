@@ -8,9 +8,9 @@ class Store {
   }
 
   addItemToStore(data) {
-    const newState = new Array(...this.state.todos);
-    // let newState = this.state.todos;
-    // console.log(newState);
+    const oldTodoList = this.state.todos;
+    const newState = new Array(...oldTodoList);
+
     newState.push({ title: data.title, id: uuidv4(), completed: false });
 
     this.state.todos = newState;
@@ -19,14 +19,17 @@ class Store {
   }
 
   deleteItemFromStore(id) {
-    let newState = this.state.todos;
+    const oldTodoList = this.state.todos;
+    let newState = new Array(...oldTodoList);
+
     newState = newState.filter((item) => item.id !== id);
     this.state.todos = newState;
     emitter.emit("event: update-store");
   }
 
   changeCompletedStatusOfItem(id) {
-    let newState = this.state.todos;
+    const oldTodoList = this.state.todos;
+    let newState = new Array(...oldTodoList);
     newState = newState.map((item) => {
       if (item.id === id) {
         item.completed = !item.completed;
@@ -42,7 +45,8 @@ class Store {
   }
 
   checkAllTodos() {
-    let newState = this.state.todos;
+    const oldTodoList = this.state.todos;
+    let newState = new Array(...oldTodoList);
     if (newState.every((item) => item.completed === true)) {
       newState = newState.map((item) => {
         item.completed = false;
@@ -60,14 +64,16 @@ class Store {
   }
 
   deleteAllCheckedTodos() {
-    let newState = this.state.todos;
+    const oldTodoList = this.state.todos;
+    let newState = new Array(...oldTodoList);
     newState = newState.filter((item) => item.completed === false);
     this.state.todos = newState;
     emitter.emit("event: update-store");
   }
 
   setFilterType(data) {
-    let newState = this.state.filterType;
+    const oldTodoList = this.state.filterType;
+    let newState = new Array(...oldTodoList);
     newState = data.filterType;
     this.state.filterType = newState;
     emitter.emit("event: update-store");

@@ -16,16 +16,15 @@ class Tasks extends react.Component {
   filterTodos() {
     let newState = [];
 
-    if (this.props.data.filterType === "all") {
-      newState = this.props.data.todos;
-    } else if (this.props.data.filterType === "active") {
-      newState = this.props.data.todos.filter(
-        (item) => item.completed === false
-      );
-    } else if (this.props.data.filterType === "completed") {
-      newState = this.props.data.todos.filter(
-        (item) => item.completed === true
-      );
+    const filterType = this.props.data.filterType;
+    const todosList = this.props.data.todos;
+
+    if (filterType === "all") {
+      newState = todosList;
+    } else if (filterType === "active") {
+      newState = todosList.filter((item) => item.completed === false);
+    } else if (filterType === "completed") {
+      newState = todosList.filter((item) => item.completed === true);
     }
 
     return newState;

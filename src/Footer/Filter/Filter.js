@@ -10,11 +10,9 @@ class Filter extends react.Component {
   setFilter(e) {
     let allFilterBtns = e.target.closest("ul").querySelectorAll("li");
     allFilterBtns.forEach((element) => {
-      // console.log(element);
       element.classList.remove("selected");
     });
     e.target.closest("li").classList.add("selected");
-    // console.log(e.target.value);
 
     emitter.emit("event:change-filter-type", {
       filterType: e.target.value,
