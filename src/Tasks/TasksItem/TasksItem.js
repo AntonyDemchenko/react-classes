@@ -1,7 +1,7 @@
-import react from "react";
+import React from "react";
 import "./TasksItem.css";
 import emitter from "../../EventEmitter";
-class TasksItem extends react.Component {
+class TasksItem extends React.Component {
   constructor(props) {
     super(props);
 
@@ -17,12 +17,14 @@ class TasksItem extends react.Component {
   handleOnChange(e) {
     emitter.emit("event:change-checkbox", {
       id: e.target.closest("li").getAttribute("item-id"),
+      completed: this.state.item.completed,
     });
   }
 
   render() {
+    // console.log(this.state.item.completed);
     return (
-      <li className="todos__item" item-id={this.state.item.id}>
+      <li className="todos__item" item-id={this.state.item.todo_id}>
         <input
           className="todos__toggle"
           type="checkbox"
@@ -34,11 +36,11 @@ class TasksItem extends react.Component {
         ></input>
         <p className="todos__title">{this.state.item.title}</p>
         <button
+          className="todos__delete"
           onClick={(e) => {
             this.handleClickDelete(e);
             e.stopPropagation();
           }}
-          className="todos__delete"
         >
           &#215;
         </button>

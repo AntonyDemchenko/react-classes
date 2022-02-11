@@ -1,4 +1,4 @@
-import react from "react";
+import React from "react";
 import "./App.css";
 import Input from "./Input/Input";
 import Tasks from "./Tasks/Tasks";
@@ -6,7 +6,7 @@ import Footer from "./Footer/Footer";
 import store from "./Store/Store";
 import emitter from "./EventEmitter";
 
-class App extends react.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
 
@@ -17,6 +17,7 @@ class App extends react.Component {
   }
 
   componentDidMount() {
+    emitter.emit("event:get-data-from-db");
     emitter.subscribe("event: update-store", (data) => {
       this.setState({
         todos: store.state.todos,

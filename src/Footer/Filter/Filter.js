@@ -1,7 +1,7 @@
-import react from "react";
+import React from "react";
 import "./Filter.css";
 import emitter from "../../EventEmitter";
-class Filter extends react.Component {
+class Filter extends React.Component {
   constructor() {
     super();
     this.state = {};

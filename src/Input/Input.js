@@ -1,22 +1,32 @@
-import react from "react";
+import React from "react";
 import "./Input.css";
 import emitter from "../EventEmitter";
 
-class Input extends react.Component {
+class Input extends React.Component {
   constructor() {
     super();
     this.state = { inputValue: "" };
   }
 
-  componentDidMount() {
-    emitter.subscribe("event:add-item", (data) => this.addNewItem(data));
-  }
+  // componentDidMount() {
+  //   emitter.subscribe("event:add-item", (data) => this.addNewItem(data));
+  // }
 
-  addNewItem(data) {
-    data.title = " ";
-    this.setState({
+  async addNewItemDB(data) {
+    const newData = JSON.stringify({ title: data });
+    const response = await fetch("http://localhost:3000/todos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: newData,
+    });
+
+    // data.title = " ";
+    await this.setState({
       inputValue: "",
     });
+    return response.json();
   }
 
   handleChange(event) {
@@ -27,11 +37,18 @@ class Input extends react.Component {
 
   handleClick(e) {
     if (e.keyCode === 13 && e.target.value.trim()) {
-      emitter.emit("event:add-item", {
-        title: e.target.value,
+      this.addNewItemDB(e.target.value).then((data) => {
+        // console.log("RES 3", data);
+
+        emitter.emit("event:add-item", {
+          title: data.title,
+          todo_id: data.todo_id,
+          completed: data.completed,
+        });
       });
     }
   }
+
   render() {
     return (
       <header>
@@ -48,5 +65,4 @@ class Input extends react.Component {
     );
   }
 }
-
 export default Input;

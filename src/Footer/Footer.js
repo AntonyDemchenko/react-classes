@@ -1,9 +1,9 @@
-import react from "react";
+import React from "react";
 import "./Footer.css";
 import Filter from "./Filter/Filter";
 import emitter from "../EventEmitter";
 
-class Footer extends react.Component {
+class Footer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
