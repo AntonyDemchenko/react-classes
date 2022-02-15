@@ -1,38 +1,46 @@
 import React from "react";
 import "./App.css";
-import Input from "./Input/Input";
-import Tasks from "./Tasks/Tasks";
-import Footer from "./Footer/Footer";
-import store from "./Store/Store";
-import emitter from "./EventEmitter";
+
+import api from "./api";
+
+import { Routes, Route } from "react-router-dom";
+import LogIn from "./LogIn/LogIn";
+import Registration from "./Registration/Registartion";
+import TodoApp from "./TodoApp/TodoApp";
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
+  // setToken() {
+  //   localStorage.setItem(
+  //     "token",
+  //     JSON.stringify({ username: "", password: "" })
+  //   );
+  // }
 
-    this.state = {
-      todos: store.state.todos,
-      filterType: store.state.filterType,
-    };
-  }
-
-  componentDidMount() {
-    emitter.emit("event:get-data-from-db");
-    emitter.subscribe("event: update-store", (data) => {
-      this.setState({
-        todos: store.state.todos,
-        filterType: store.state.filterType,
-      });
-    });
+  getToken() {
+    const tokenString = localStorage.getItem("token");
+    const userToken = JSON.parse(tokenString);
+    return userToken;
   }
   render() {
+    // this.setToken();
+    // const token = this.getToken();
+    // if (token.username === "test" && token.password === "123") {
+    //   return (
+    //     <div className="container">
+    //       <TodoApp />
+    //     </div>
+    //   );
+    // } else {
     return (
       <div className="container">
-        <Input />
-        <Tasks data={this.state} />
-        <Footer data={this.state} />
+        <Routes>
+          <Route path="/" exact element={<LogIn />}></Route>
+          <Route path="/todo" element={<TodoApp />}></Route>
+          <Route path="/registration" element={<Registration />}></Route>
+        </Routes>
       </div>
     );
+    // }
   }
 }
 

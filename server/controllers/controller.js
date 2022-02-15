@@ -1,4 +1,6 @@
 import { pool } from "../db.js";
+import bcrypt from "bcrypt";
+import { creatTokens } from "./services.js";
 
 export async function insertData(title, id, completed) {
   try {
@@ -72,12 +74,51 @@ export async function deleteCompleted(completed) {
   }
 }
 
-// export async function sortData() {
-//   try {
-//     const res = await pool.query("SELECT * FROM todo_list ORDER BY id ASC");
-//     console.log(`sorted table`);
-//     // console.log(res.rows);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
+export async function register(ctx) {
+  const body = ctx.request.body;
+
+  try {
+    if (!body.username || !body.password) {
+      ctx.status = 400;
+      ctx.body = {
+        error: `expected an object with username, password but got: ${body}`,
+      };
+      return;
+    }
+
+    let user = await pool.query(
+      "SELECT EXISTS(SELECT * FROM users WHERE username = $1)",
+      [body.username]
+    );
+
+    if (!user.rows[0].exists) {
+      body.password = await bcrypt.hash(body.password, 5);
+
+      const tokenObj = creatTokens.generateToken({ username: body.username });
+
+      const res = await pool.query(
+        "INSERT INTO users (username, password, refreshtoken) VALUES ($1, $2, $3)",
+        [body.username, body.password, tokenObj.refreshToken]
+      );
+
+      // ctx.status = 200;
+      ctx.body = {
+        status: 200,
+        Message: "registration succeeded",
+        accesstoken: tokenObj.accessToken,
+        refreshToken: tokenObj.refreshToken,
+      };
+      return;
+    } else {
+      // ctx.status = 406;
+      ctx.body = {
+        status: 406,
+        Message: "user name already exists",
+      };
+      return;
+    }
+  } catch (error) {
+    // ctx.throw(500);
+    console.log(error);
+  }
+}

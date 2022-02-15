@@ -1,6 +1,7 @@
 import Router from "@koa/router";
 import { pool } from "../db.js";
 import { v4 as uuidv4 } from "uuid";
+
 import {
   insertData,
   getData,
@@ -8,27 +9,10 @@ import {
   deleteData,
   toggleCompleted,
   deleteCompleted,
+  register,
 } from "../controllers/controller.js";
 
 const router = new Router();
-
-// let todosList = [
-//   {
-//     title: "test title 1",
-//     id: "324243243243243rewfew43rf43f4",
-//     completed: false,
-//   },
-//   {
-//     title: "test title 2!",
-//     id: "dsfdsfvbfe4w43r434tg",
-//     completed: false,
-//   },
-//   {
-//     title: "test title 3!",
-//     id: "dsffffffffffffffff43r434tg",
-//     completed: true,
-//   },
-// ];
 
 router.get("get-all-todos", "/todos", async (ctx) => {
   ctx.body = "get todos";
@@ -83,6 +67,35 @@ router.delete("delete-all-checked", "/todos/delete-checked/:all", (ctx) => {
   deleteCompleted(true);
 
   ctx.body = "deleted all true";
+});
+
+router.post("login", "/login", (ctx) => {
+  console.log("data", ctx.request.body);
+  ctx.body = "send token";
+  const testData = {
+    username: "test",
+    password: "123",
+  };
+  const clientData = ctx.request.body;
+  console.log(clientData);
+  if (
+    testData.username === clientData.username &&
+    testData.password === clientData.password
+  ) {
+    // console.log("Y");
+    ctx.response.body = JSON.stringify({
+      answer: "OK",
+    });
+  } else {
+    // console.log("N");
+    ctx.response.body = JSON.stringify({
+      answer: "NO",
+    });
+  }
+});
+
+router.post("registration", "/registration", (ctx) => {
+  return register(ctx);
 });
 
 export default router;
