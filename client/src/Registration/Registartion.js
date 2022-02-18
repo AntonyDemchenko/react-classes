@@ -14,7 +14,7 @@ class Registration extends React.Component {
   }
   async registration(data) {
     const newData = JSON.stringify(data);
-    // console.log("::::::::::::::::::::::::::::", newData);
+
     const response = await fetch("http://localhost:3000/registration", {
       method: "POST",
       headers: {
@@ -27,22 +27,25 @@ class Registration extends React.Component {
 
   handleSubmit(event) {
     this.registration(this.state).then((data) => {
-      console.log("reg", data);
+      // console.log("reg", data);
       localStorage.setItem(
         "token",
-        JSON.stringify({ accessToken: data.accesstoken })
+        JSON.stringify({
+          accessToken: data.accesstoken,
+          refreshToken: data.refreshToken,
+        })
       );
-      // this.detectRegistration(data.status);
+      this.detectRegistration(data.status);
     });
     event.preventDefault();
     this.setState({ username: "", password: "" });
   }
 
-  // detectRegistration(succesStatus) {
-  //   if (succesStatus === 200) {
-  //     this.loginRef.current.click();
-  //   }
-  // }
+  detectRegistration(succesStatus) {
+    if (succesStatus === 200) {
+      this.loginRef.current.click();
+    }
+  }
 
   setUserName(e) {
     this.setState({ username: e });

@@ -2,18 +2,37 @@ import store from "./Store/Store";
 import emitter from "./EventEmitter";
 
 class Api {
-  constructor() {
-    // super();
+  constructor() {}
+
+  getAccessToken() {
+    return JSON.parse(localStorage.getItem("token")) || "fail";
   }
 
   async getDataFromDB() {
-    console.log("dddddddddddddddd");
+    // console.log(this.getAccessToken());
     const response = await fetch("http://localhost:3000/todos", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: this.getAccessToken().accesstoken,
       },
     });
+    // console.log(response.json());
+    return response.json();
+  }
+
+  async addNewItemDB(data) {
+    const newData = JSON.stringify({ title: data.title });
+    const response = await fetch("http://localhost:3000/todos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: this.getAccessToken().accesstoken,
+      },
+      body: newData,
+    });
+
+    // data.title = " ";
 
     return response.json();
   }
@@ -23,6 +42,7 @@ class Api {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: this.getAccessToken().accesstoken,
       },
     });
     return response.json();
@@ -33,6 +53,7 @@ class Api {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: this.getAccessToken().accesstoken,
       },
       body: JSON.stringify({ completed: !data.completed }),
     });
@@ -52,6 +73,7 @@ class Api {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: this.getAccessToken().accesstoken,
         },
       }
     );
@@ -64,6 +86,7 @@ class Api {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: this.getAccessToken().accesstoken,
         },
       }
     );
@@ -77,12 +100,30 @@ emitter.subscribe("event:get-data-from-db", (data) =>
     .getDataFromDB()
     .then((data) => {
       console.log(data);
-      store.state.todos = data;
+
+      // console.log("uuuuuuuuuuu", data);
+      store.state.todos = data.todos;
+      store.state.username = data.user;
+      if (data.tokens) {
+        localStorage.setItem("token", JSON.stringify({ tokens: data.tokens }));
+      }
       emitter.emit("event: update-store", {});
     })
     .catch((error) => {
+      emitter.emit("event: check-login", { login: false });
       console.error("Error:", error);
     })
+);
+emitter.subscribe("event:add-item-DB", (data) =>
+  api.addNewItemDB(data).then((data) => {
+    // console.log("RES 3", data);
+
+    emitter.emit("event:add-item", {
+      title: data.title,
+      todo_id: data.todo_id,
+      completed: data.completed,
+    });
+  })
 );
 
 emitter.subscribe("event:delete-item", (data) =>

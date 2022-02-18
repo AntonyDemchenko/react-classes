@@ -71,3 +71,7 @@
   color: gray;
   cursor: pointer;
 }
+
+.enter_todos {
+  visibility: hidden;
+}

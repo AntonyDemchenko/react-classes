@@ -1,6 +1,7 @@
 import React from "react";
 import "./LogIn.css";
 import { NavLink } from "react-router-dom";
+import emitter from "../EventEmitter";
 class LogIn extends React.Component {
   constructor() {
     super();
@@ -9,11 +10,11 @@ class LogIn extends React.Component {
       username: "",
       password: "",
     };
-    // this.handleSubmit = this.handleSubmit.bind(this);
+    this.todosRef = React.createRef();
   }
   async login(data) {
     const newData = JSON.stringify(data);
-    // console.log("::::::::::::::::::::::::::::", newData);
+
     const response = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: {
@@ -25,21 +26,21 @@ class LogIn extends React.Component {
   }
 
   handleSubmit(event) {
-    // console.log(this.state);
     this.login(this.state).then((data) => {
-      //   console.log(data);
+      localStorage.setItem("token", JSON.stringify(data));
+      emitter.emit("event: check-login", { login: data.status });
     });
     event.preventDefault();
-    localStorage.setItem("token", JSON.stringify(this.state));
+
     this.setState({ username: "", password: "" });
   }
 
   setUserName(e) {
-    this.setState({ username: e });
+    this.setState({ username: e.trim() });
   }
 
   setPassword(e) {
-    this.setState({ password: e });
+    this.setState({ password: e.trim() });
   }
 
   render() {
@@ -70,13 +71,11 @@ class LogIn extends React.Component {
               type="submit"
               value={this.state.password}
             >
-              <NavLink to="/todo" className="todo-link">
-                Submit
-              </NavLink>
+              Submit
             </button>
           </div>
         </form>
-        {/* <div>======================================================</div> */}
+
         <div className="links">
           <NavLink to="/registration" className="sign-up">
             Sign up!

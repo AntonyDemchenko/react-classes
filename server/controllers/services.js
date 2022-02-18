@@ -6,9 +6,9 @@ const keys = {
 };
 class TokenService {
   generateToken(payload) {
-    console.log(";;;;;;;;;;;;;;;;;;;", keys);
+    // console.log(";;;;;;;;;;;;;;;;;;;", keys);
     const accessToken = jwt.sign(payload, keys.jwtAccessSecret, {
-      expiresIn: "15m",
+      expiresIn: "1m",
     });
     const refreshToken = jwt.sign(payload, keys.jwtRefreshSecret, {
       expiresIn: "15d",
@@ -18,6 +18,21 @@ class TokenService {
       accessToken,
       refreshToken,
     };
+  }
+
+  authenticateToken(ctx) {
+    const authHeader = ctx.headers["authorization"];
+
+    const token = authHeader;
+    if (token == null) {
+      ctx.status = 401;
+      console.log("token is null");
+    }
+
+    jwt.verify(token, keys.jwtAccessSecret, (err, user) => {
+      if (err) return (ctx.status = 401);
+      return true;
+    });
   }
 }
 

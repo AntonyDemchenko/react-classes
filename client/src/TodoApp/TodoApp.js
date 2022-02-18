@@ -11,23 +11,25 @@ class TodoApp extends React.Component {
     this.state = {
       todos: store.state.todos,
       filterType: store.state.filterType,
+      username: store.state.username,
     };
   }
 
   componentDidMount() {
-    console.log("init!");
+    // console.log("init!");
     emitter.emit("event:get-data-from-db");
     emitter.subscribe("event: update-store", (data) => {
       this.setState({
         todos: store.state.todos,
         filterType: store.state.filterType,
+        username: store.state.username,
       });
     });
-    console.log(this.state.todos);
   }
 
   render() {
     // console.log(this.props.data);
+    // console.log(this.state);
     return (
       <>
         <Input />

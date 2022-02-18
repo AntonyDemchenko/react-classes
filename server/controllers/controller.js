@@ -1,6 +1,7 @@
 import { pool } from "../db.js";
 import bcrypt from "bcrypt";
 import { creatTokens } from "./services.js";
+import jwt from "jsonwebtoken";
 
 export async function insertData(title, id, completed) {
   try {
@@ -16,11 +17,12 @@ export async function insertData(title, id, completed) {
   }
 }
 
-export async function getData() {
+export async function getData(ctx) {
   try {
     const res = await pool.query("SELECT * FROM todo_list ORDER BY id ASC");
-
-    return res;
+    ctx.body.todos = res.rows;
+    return;
+    // }
   } catch (error) {
     console.error(error);
   }
@@ -107,6 +109,7 @@ export async function register(ctx) {
         Message: "registration succeeded",
         accesstoken: tokenObj.accessToken,
         refreshToken: tokenObj.refreshToken,
+        user: body.username,
       };
       return;
     } else {
@@ -121,4 +124,94 @@ export async function register(ctx) {
     // ctx.throw(500);
     console.log(error);
   }
+}
+
+export async function login(ctx) {
+  const body = ctx.request.body;
+  // console.log(body);
+  try {
+    // const user = await User.findOne({ username: body.username });
+    let user = await pool.query(
+      "SELECT EXISTS(SELECT * FROM users WHERE username = $1)",
+      [body.username]
+    );
+    if (!user.rows[0].exists) {
+      // ctx.status = 401;
+      ctx.body = {
+        Message: "user name error",
+      };
+      return;
+    }
+    //Is the matching password equal
+    const userPass = await pool.query(
+      "SELECT password FROM users WHERE username = $1",
+      [body.username]
+    );
+    // console.log(userPass);
+    if (await bcrypt.compare(body.password, userPass.rows[0].password)) {
+      const tokenObj = creatTokens.generateToken({ username: body.username });
+      const res = await pool.query(
+        "UPDATE users SET refreshtoken = $2 WHERE username = $1",
+        [body.username, tokenObj.refreshToken]
+      );
+      // ctx.status = 200;
+      ctx.body = {
+        status: 200,
+        Message: "login succeeded",
+
+        accesstoken: tokenObj.accessToken,
+        refreshToken: tokenObj.refreshToken,
+        user: body.username,
+      };
+      return;
+    } else {
+      ctx.status = 401;
+      ctx.body = {
+        Message: "password error",
+      };
+      return;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function checkRefreshToken(username) {
+  console.log("uuuuuu", username);
+
+  const refreshToken = await pool.query(
+    "SELECT refreshtoken FROM users WHERE username = $1",
+    [username]
+  );
+  console.log("rt", refreshToken.rows[0].refreshtoken);
+  try {
+    const refreshClaims = await jwt.verify(
+      refreshToken.rows[0].refreshtoken,
+      "SECRET_KEY_REFRESHTOKEN"
+    );
+
+    const tokenObj = creatTokens.generateToken({ username: username });
+
+    const res = await pool.query(
+      "UPDATE users SET refreshtoken = $2 WHERE username = $1",
+      [username, tokenObj.refreshToken]
+    );
+
+    return {
+      accesstoken: tokenObj.accessToken,
+      refreshToken: tokenObj.refreshToken,
+    };
+  } catch (err) {
+    console.log("aaaaaaaaaaaaaaaaa", err);
+    // ctx.throw(401);
+  }
+
+  // if (!refreshClaims) {
+  //   console.log("aaaaaaaaaaaaaaaaa");
+  //   ctx.throw(401);
+  // }
+
+  // console.log("rrrrrrrrrrrrrrrr", refreshToken.rows[0].refreshtoken);
+
+  // return refreshToken.rows[0].refreshtoken;
 }

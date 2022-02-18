@@ -4,7 +4,7 @@ import emitter from "../EventEmitter";
 class Store {
   constructor() {
     // super();
-    this.state = { todos: [], filterType: "all" };
+    this.state = { todos: [], filterType: "all", username: "" };
   }
 
   addItemToStore(data) {
