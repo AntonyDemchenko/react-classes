@@ -4,6 +4,8 @@ import Input from "../Input/Input";
 import Tasks from "../Tasks/Tasks";
 import store from "../Store/Store";
 import emitter from "../EventEmitter";
+import api from "../api";
+// import Header from "../Header/Header";
 class TodoApp extends React.Component {
   constructor() {
     super();
@@ -19,17 +21,21 @@ class TodoApp extends React.Component {
     // console.log("init!");
     emitter.emit("event:get-data-from-db");
     emitter.subscribe("event: update-store", (data) => {
-      this.setState({
-        todos: store.state.todos,
-        filterType: store.state.filterType,
-        username: store.state.username,
-      });
+      this.updateDate();
+    });
+  }
+
+  updateDate() {
+    this.setState({
+      todos: store.state.todos,
+      filterType: store.state.filterType,
+      username: store.state.username,
     });
   }
 
   render() {
     // console.log(this.props.data);
-    // console.log(this.state);
+    console.log(this.state);
     return (
       <>
         <Input />

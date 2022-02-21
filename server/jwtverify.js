@@ -36,10 +36,8 @@ class Verify {
       };
     } catch (err) {
       const tokens = await checkRefreshToken(user.username);
-      console.log("tttttttttttttttttttt", tokens);
+      // console.log("tttttttttttttttttttt", tokens);
       ctx.body = { tokens: tokens };
-      // return;
-      // ctx.throw(401);
     }
 
     return next(ctx);

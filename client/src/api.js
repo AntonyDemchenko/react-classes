@@ -9,6 +9,7 @@ class Api {
   }
 
   async getDataFromDB() {
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     // console.log(this.getAccessToken());
     const response = await fetch("http://localhost:3000/todos", {
       method: "GET",
@@ -105,7 +106,8 @@ emitter.subscribe("event:get-data-from-db", (data) =>
       store.state.todos = data.todos;
       store.state.username = data.user;
       if (data.tokens) {
-        localStorage.setItem("token", JSON.stringify({ tokens: data.tokens }));
+        store.state.username = data.tokens.user;
+        localStorage.setItem("token", JSON.stringify(data.tokens));
       }
       emitter.emit("event: update-store", {});
     })

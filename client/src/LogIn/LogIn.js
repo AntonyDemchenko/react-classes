@@ -27,6 +27,7 @@ class LogIn extends React.Component {
 
   handleSubmit(event) {
     this.login(this.state).then((data) => {
+      console.log(data);
       localStorage.setItem("token", JSON.stringify(data));
       emitter.emit("event: check-login", { login: data.status });
     });

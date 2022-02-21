@@ -200,18 +200,9 @@ export async function checkRefreshToken(username) {
     return {
       accesstoken: tokenObj.accessToken,
       refreshToken: tokenObj.refreshToken,
+      user: username,
     };
   } catch (err) {
     console.log("aaaaaaaaaaaaaaaaa", err);
-    // ctx.throw(401);
   }
-
-  // if (!refreshClaims) {
-  //   console.log("aaaaaaaaaaaaaaaaa");
-  //   ctx.throw(401);
-  // }
-
-  // console.log("rrrrrrrrrrrrrrrr", refreshToken.rows[0].refreshtoken);
-
-  // return refreshToken.rows[0].refreshtoken;
 }

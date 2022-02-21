@@ -26,7 +26,7 @@ class Input extends React.Component {
 
   render() {
     return (
-      <header>
+      <header className="input-header">
         <h1 className="main-title">todos</h1>
         <input
           onKeyDown={(e) => this.handleClick(e)}

@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import "./Registration.css";
+import emitter from "../EventEmitter";
 class Registration extends React.Component {
   constructor() {
     super();
@@ -27,7 +28,7 @@ class Registration extends React.Component {
 
   handleSubmit(event) {
     this.registration(this.state).then((data) => {
-      // console.log("reg", data);
+      console.log("reg", data);
       localStorage.setItem(
         "token",
         JSON.stringify({
@@ -36,6 +37,10 @@ class Registration extends React.Component {
         })
       );
       this.detectRegistration(data.status);
+
+      // if (data.status === 200) {
+      // emitter.emit("event: check-login", { login: "" });
+      // }
     });
     event.preventDefault();
     this.setState({ username: "", password: "" });
@@ -44,6 +49,7 @@ class Registration extends React.Component {
   detectRegistration(succesStatus) {
     if (succesStatus === 200) {
       this.loginRef.current.click();
+      // emitter.emit("event: check-login", { login: "" });
     }
   }
 

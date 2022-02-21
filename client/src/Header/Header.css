@@ -1,0 +1,48 @@
+.main-header {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: 100vw;
+  height: 40px;
+  background-color: rgb(202, 224, 225);
+  position: fixed;
+  left: 0;
+  top: 0;
+  opacity: 1;
+  box-sizing: border-box;
+  padding: 0 40px;
+  z-index: 2000;
+}
+.header__logout {
+  color: white;
+  cursor: pointer;
+  margin-left: auto;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  font-size: 16px;
+}
+.header__logout:active {
+  transform: scale(0.9);
+}
+.header__icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid grey;
+  background-color: #fff;
+  z-index: 1000;
+}
+.header__user {
+  width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: bold;
+}
+.header__user-title {
+  font-size: 12px;
+  opacity: 0.7;
+}
+.header__username {
+}
