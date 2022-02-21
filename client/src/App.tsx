@@ -6,17 +6,19 @@ import emitter from "./EventEmitter";
 import { Routes, Route } from "react-router-dom";
 import LogIn from "./LogIn/LogIn";
 import Registration from "./Registration/Registartion";
-import TodoApp from "./TodoApp/TodoApp";
+import TodoApp from "./TodoApp/TodoApp.tsx";
 import Header from "./Header/Header";
 
-import store from "./Store/Store";
+// import store from "./Store/Store.ts";
 
 type StateType = {
   login: string;
 };
 
-class App extends React.Component<{}, StateType> {
-  constructor(props: string) {
+type PropsType = {};
+
+class App extends React.Component<{}, StateType, PropsType> {
+  constructor(props: PropsType) {
     super(props);
 
     this.state = {
@@ -24,14 +26,13 @@ class App extends React.Component<{}, StateType> {
     };
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     emitter.subscribe("event: check-login", (data: StateType) => {
-      // console.log("[[[[[[[[[[[[[[[[[[[", data.login);
       this.checkLogin(data.login);
     });
   }
 
-  checkLogin(data: string) {
+  checkLogin(data: string): void {
     this.setState({
       login: data,
     });

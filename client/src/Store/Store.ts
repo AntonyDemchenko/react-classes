@@ -1,13 +1,30 @@
 import emitter from "../EventEmitter";
 // import { v4 as uuidv4 } from "uuid";
 
+type TodoType = {
+  title: string;
+  todo_id: string;
+  completed: boolean;
+};
+
+type StateType = {
+  todos: Array<TodoType>;
+  filterType: "all" | "active" | "completed";
+  username: string;
+};
+
+type FilterType = {
+  filterType: "all" | "active" | "completed";
+};
+
 class Store {
+  state: StateType;
   constructor() {
     // super();
     this.state = { todos: [], filterType: "all", username: "" };
   }
 
-  addItemToStore(data) {
+  addItemToStore(data: TodoType): void {
     const oldTodoList = this.state.todos;
     const newState = new Array(...oldTodoList);
 
@@ -22,7 +39,7 @@ class Store {
     emitter.emit("event: update-store", {});
   }
 
-  deleteItemFromStore(id) {
+  deleteItemFromStore(id: string): void {
     const oldTodoList = this.state.todos;
     let newState = new Array(...oldTodoList);
 
@@ -31,7 +48,7 @@ class Store {
     emitter.emit("event: update-store");
   }
 
-  changeCompletedStatusOfItemStore(data) {
+  changeCompletedStatusOfItemStore(data: TodoType): void {
     const oldTodoList = this.state.todos;
     let newState = new Array(...oldTodoList);
     newState = newState.map((item) => {
@@ -46,7 +63,7 @@ class Store {
     emitter.emit("event: update-store");
   }
 
-  checkAllTodos() {
+  checkAllTodos(): void {
     const oldTodoList = this.state.todos;
     let newState = new Array(...oldTodoList);
     if (newState.every((item) => item.completed === true)) {
@@ -65,7 +82,7 @@ class Store {
     emitter.emit("event: update-store", {});
   }
 
-  deleteAllCheckedTodos() {
+  deleteAllCheckedTodos(): void {
     const oldTodoList = this.state.todos;
     let newState = new Array(...oldTodoList);
     newState = newState.filter((item) => item.completed === false);
@@ -73,19 +90,20 @@ class Store {
     emitter.emit("event: update-store");
   }
 
-  setFilterType(data) {
-    const oldTodoList = this.state.filterType;
-    let newState = new Array(...oldTodoList);
-    newState = data.filterType;
+  setFilterType(data: FilterType): void {
+    const newState = data.filterType;
     this.state.filterType = newState;
     emitter.emit("event: update-store");
   }
 }
 
 const store = new Store();
-emitter.subscribe("event:add-item", (data) => store.addItemToStore(data));
 
-emitter.subscribe("event:change-filter-type", (data) =>
+emitter.subscribe("event:add-item", (data: TodoType) =>
+  store.addItemToStore(data)
+);
+
+emitter.subscribe("event:change-filter-type", (data: FilterType) =>
   store.setFilterType(data)
 );
 

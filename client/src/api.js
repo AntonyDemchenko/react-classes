@@ -1,4 +1,4 @@
-import store from "./Store/Store";
+import store from "./Store/Store.ts";
 import emitter from "./EventEmitter";
 
 class Api {

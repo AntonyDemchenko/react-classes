@@ -1,6 +1,6 @@
 import React from "react";
 import "./Header.css";
-import store from "../Store/Store";
+import store from "../Store/Store.ts";
 import emitter from "../EventEmitter";
 class Header extends React.Component {
   constructor() {
