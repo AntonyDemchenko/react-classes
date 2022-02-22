@@ -1,10 +1,26 @@
 import React from "react";
 import "./Tasks.css";
 import TasksItem from "./TasksItem/TasksItem";
-// import store from "../Store/Store";
 import emitter from "../EventEmitter";
-class Tasks extends React.Component {
-  constructor(props) {
+
+type PropsType = {
+  todos: Array<TodoType>;
+  filterType: string;
+  username: string;
+};
+
+type TodoType = {
+  title: string;
+  todo_id: string;
+  completed: boolean;
+};
+type StateType = {
+  todos: Array<TodoType>;
+};
+
+class Tasks extends React.Component<PropsType, StateType> {
+  state: StateType;
+  constructor(props: PropsType) {
     super(props);
     this.state = { todos: [] };
   }
@@ -13,16 +29,16 @@ class Tasks extends React.Component {
     emitter.emit("event:change-all-checkboxes");
   }
 
-  filterTodos() {
-    let newState = [];
+  filterTodos(): StateType {
+    let newState: StateType = { todos: [] };
 
-    const filterType = this.props.data.filterType;
-    const todosList = this.props.data.todos;
+    const filterType = this.props.filterType;
+    const todosList = this.props.todos;
 
     if (filterType === "all") {
       newState = todosList;
     } else if (filterType === "active") {
-      newState = todosList.filter((item) => item.completed === false);
+      newState.todos = todosList.filter((item) => item.completed === false);
     } else if (filterType === "completed") {
       newState = todosList.filter((item) => item.completed === true);
     }
@@ -33,18 +49,16 @@ class Tasks extends React.Component {
   render() {
     return (
       <section
-        className={
-          this.props.data.todos.length === 0 ? "tasks" : "tasks active"
-        }
+        className={this.props.todos.length === 0 ? "tasks" : "tasks active"}
       >
         <button
           className={
-            this.props.data.todos.length !== 0 &&
-            this.props.data.todos.every((item) => item.completed === true)
+            this.props.todos.length !== 0 &&
+            this.props.todos.every((item) => item.completed === true)
               ? "check-all active "
               : "check-all"
           }
-          onClick={(e) => this.checkAllTodos()}
+          onClick={this.checkAllTodos}
         >
           <p className="check-all__arrow">❯</p>
         </button>

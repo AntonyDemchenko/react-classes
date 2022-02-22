@@ -3,30 +3,41 @@ import "./Footer.css";
 import Filter from "./Filter/Filter";
 import emitter from "../EventEmitter";
 
-class Footer extends React.Component {
-  constructor(props) {
+type TodoType = {
+  title: string;
+  todo_id: string;
+  completed: boolean;
+};
+
+type PropsType = {
+  todos: Array<TodoType>;
+  filterType: string;
+  username: string;
+};
+
+class Footer extends React.Component<PropsType> {
+  constructor(props: PropsType) {
     super(props);
-    this.state = {};
+    console.log(props);
   }
 
-  setCountActiveTodos() {
-    const allTodos = this.props.data.todos;
+  setCountActiveTodos(): number {
+    const allTodos = this.props.todos;
 
     const todosCount = allTodos.filter((item) => item.completed === false);
 
     return todosCount.length;
   }
 
-  deleteAllCheckedTodos() {
+  deleteAllCheckedTodos(): void {
     emitter.emit("event:delete-all-checked");
   }
 
   render() {
+    console.log("ssssssssssssssssssssss");
     return (
       <footer
-        className={
-          this.props.data.todos.length === 0 ? "footer" : "footer active"
-        }
+        className={this.props.todos.length === 0 ? "footer" : "footer active"}
       >
         <span className="todo-count">
           <span className="todo-count__number">

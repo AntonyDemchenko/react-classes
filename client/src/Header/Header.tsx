@@ -1,30 +1,37 @@
 import React from "react";
 import "./Header.css";
-import store from "../Store/Store.ts";
+import store from "../Store/Store";
 import emitter from "../EventEmitter";
-class Header extends React.Component {
-  constructor() {
-    super();
+
+type PropsType = {};
+
+type StateType = {
+  username: string;
+};
+class Header extends React.Component<PropsType, StateType> {
+  state: StateType;
+  constructor(props: PropsType) {
+    super(props);
 
     this.state = {
       username: store.state.username,
     };
   }
 
-  componentDidMount() {
-    emitter.subscribe("event: update-store", (data) => {
+  componentDidMount(): void {
+    emitter.subscribe("event: update-store", () => {
       this.setUsername();
     });
   }
 
-  setUsername() {
+  setUsername(): void {
     this.setState({
       username: store.state.username,
     });
   }
 
-  logOut() {
-    console.log("ddddddddddddddddddddddddd");
+  logOut(): void {
+    // console.log("ddddddddddddddddddddddddd");
 
     localStorage.clear();
     emitter.emit("event: check-login", { login: "" });

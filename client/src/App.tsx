@@ -6,7 +6,7 @@ import emitter from "./EventEmitter";
 import { Routes, Route } from "react-router-dom";
 import LogIn from "./LogIn/LogIn";
 import Registration from "./Registration/Registartion";
-import TodoApp from "./TodoApp/TodoApp.tsx";
+import TodoApp from "./TodoApp/TodoApp";
 import Header from "./Header/Header";
 
 // import store from "./Store/Store.ts";

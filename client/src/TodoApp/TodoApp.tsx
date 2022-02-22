@@ -7,7 +7,19 @@ import emitter from "../EventEmitter";
 
 type PropsType = {};
 
+type TodoType = {
+  title: string;
+  todo_id: string;
+  completed: boolean;
+};
+type StateType = {
+  todos: Array<TodoType>;
+  filterType: string;
+  username: string;
+};
+
 class TodoApp extends React.Component<{}, PropsType> {
+  state: StateType;
   constructor(props: PropsType) {
     super(props);
 
@@ -35,13 +47,13 @@ class TodoApp extends React.Component<{}, PropsType> {
   }
 
   render() {
-    // console.log(this.props.data);
+    // console.log(this.state);
     console.log(this.state);
     return (
       <>
         <Input />
-        <Tasks data={this.state} />
-        <Footer data={this.state} />
+        <Tasks {...this.state} />
+        <Footer {...this.state} />
       </>
     );
   }

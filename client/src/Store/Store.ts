@@ -12,9 +12,14 @@ type StateType = {
   filterType: "all" | "active" | "completed";
   username: string;
 };
+enum FilterType {
+  all = "all",
+  active = "active",
+  completed = "completed",
+}
 
-type FilterType = {
-  filterType: "all" | "active" | "completed";
+type FilterData = {
+  filterType: FilterType;
 };
 
 class Store {
@@ -90,7 +95,7 @@ class Store {
     emitter.emit("event: update-store");
   }
 
-  setFilterType(data: FilterType): void {
+  setFilterType(data: FilterData): void {
     const newState = data.filterType;
     this.state.filterType = newState;
     emitter.emit("event: update-store");
@@ -103,7 +108,7 @@ emitter.subscribe("event:add-item", (data: TodoType) =>
   store.addItemToStore(data)
 );
 
-emitter.subscribe("event:change-filter-type", (data: FilterType) =>
+emitter.subscribe("event:change-filter-type", (data: FilterData) =>
   store.setFilterType(data)
 );
 

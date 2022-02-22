@@ -2,14 +2,14 @@
   display: flex;
   list-style: none;
 }
-.filter-btns li {
+.filter-btns button {
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 3px;
 }
 
-.filter-btns li.selected {
+.filter-btns button.selected {
   border: 1px solid;
   border-color: rgba(175, 47, 47, 0.2) !important;
   margin: 2px;
@@ -18,7 +18,7 @@
   justify-content: center;
 }
 
-.filter-btns li button {
+.filter-btn {
   display: flex;
   align-items: center;
   justify-content: center;
