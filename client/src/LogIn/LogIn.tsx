@@ -2,17 +2,37 @@ import React from "react";
 import "./LogIn.css";
 import { NavLink } from "react-router-dom";
 import emitter from "../EventEmitter";
-class LogIn extends React.Component {
-  constructor() {
-    super();
+import { type } from "os";
+
+type PropsType = {};
+
+type StateType = {
+  username: string;
+  password: string;
+};
+
+type Res = {
+  accesstoken: string;
+  refreshToken: string;
+  user: string;
+  status: number;
+};
+
+class LogIn extends React.Component<PropsType, StateType> {
+  state: StateType;
+  todosRef: React.RefObject<HTMLInputElement>;
+  constructor(props: PropsType) {
+    super(props);
 
     this.state = {
       username: "",
       password: "",
     };
+
     this.todosRef = React.createRef();
   }
-  async login(data) {
+
+  async login(data: StateType): Promise<Res> {
     const newData = JSON.stringify(data);
 
     const response = await fetch("http://localhost:3000/login", {
@@ -25,9 +45,8 @@ class LogIn extends React.Component {
     return response.json();
   }
 
-  handleSubmit(event) {
+  handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
     this.login(this.state).then((data) => {
-      console.log(data);
       localStorage.setItem("token", JSON.stringify(data));
       emitter.emit("event: check-login", { login: data.status });
     });
@@ -36,12 +55,12 @@ class LogIn extends React.Component {
     this.setState({ username: "", password: "" });
   }
 
-  setUserName(e) {
-    this.setState({ username: e.trim() });
+  setUserName(e: React.ChangeEvent<HTMLInputElement>): void {
+    this.setState({ username: (e.target as HTMLInputElement).value.trim() });
   }
 
-  setPassword(e) {
-    this.setState({ password: e.trim() });
+  setPassword(e: React.ChangeEvent<HTMLInputElement>): void {
+    this.setState({ password: (e.target as HTMLInputElement).value.trim() });
   }
 
   render() {
@@ -56,14 +75,14 @@ class LogIn extends React.Component {
             type="text"
             placeholder="Username"
             value={this.state.username}
-            onChange={(e) => this.setUserName(e.target.value)}
+            onChange={this.setUserName.bind(this)}
           />
 
           <input
             type="password"
             placeholder="Password"
             value={this.state.password}
-            onChange={(e) => this.setPassword(e.target.value)}
+            onChange={this.setPassword.bind(this)}
           />
 
           <div className="submit">

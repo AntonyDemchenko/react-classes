@@ -10,18 +10,28 @@ type StateType = {
 };
 class Header extends React.Component<PropsType, StateType> {
   state: StateType;
+  mounted: boolean;
   constructor(props: PropsType) {
     super(props);
 
     this.state = {
       username: store.state.username,
     };
+
+    this.mounted = false;
   }
 
   componentDidMount(): void {
-    emitter.subscribe("event: update-store", () => {
-      this.setUsername();
-    });
+    this.mounted = true;
+    if (this.mounted) {
+      emitter.subscribe("event: update-store", () => {
+        this.setUsername();
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   setUsername(): void {
@@ -31,12 +41,11 @@ class Header extends React.Component<PropsType, StateType> {
   }
 
   logOut(): void {
-    // console.log("ddddddddddddddddddddddddd");
-
     localStorage.clear();
     emitter.emit("event: check-login", { login: "" });
   }
   render() {
+    // this.mounted = false;
     return (
       <header className="main-header">
         <div className="header__user">

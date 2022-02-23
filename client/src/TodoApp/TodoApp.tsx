@@ -20,6 +20,7 @@ type StateType = {
 
 class TodoApp extends React.Component<{}, PropsType> {
   state: StateType;
+  mounted: boolean;
   constructor(props: PropsType) {
     super(props);
 
@@ -28,14 +29,23 @@ class TodoApp extends React.Component<{}, PropsType> {
       filterType: store.state.filterType,
       username: store.state.username,
     };
+
+    this.mounted = true;
   }
 
   componentDidMount() {
-    // console.log("init!");
-    emitter.emit("event:get-data-from-db");
-    emitter.subscribe("event: update-store", () => {
-      this.updateDate();
-    });
+    this.mounted = true;
+    if (this.mounted) {
+      // console.log("init!");
+      emitter.emit("event:get-data-from-db");
+      emitter.subscribe("event: update-store", () => {
+        this.updateDate();
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   updateDate() {
@@ -47,8 +57,7 @@ class TodoApp extends React.Component<{}, PropsType> {
   }
 
   render() {
-    // console.log(this.state);
-    console.log(this.state);
+    // this.mounted = false;
     return (
       <>
         <Input />

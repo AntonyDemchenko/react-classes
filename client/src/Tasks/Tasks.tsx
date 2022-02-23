@@ -36,11 +36,11 @@ class Tasks extends React.Component<PropsType, StateType> {
     const todosList = this.props.todos;
 
     if (filterType === "all") {
-      newState = todosList;
+      newState.todos = todosList;
     } else if (filterType === "active") {
       newState.todos = todosList.filter((item) => item.completed === false);
     } else if (filterType === "completed") {
-      newState = todosList.filter((item) => item.completed === true);
+      newState.todos = todosList.filter((item) => item.completed === true);
     }
 
     return newState;
@@ -64,7 +64,7 @@ class Tasks extends React.Component<PropsType, StateType> {
         </button>
         <div className="todos-tasks">
           <ul className="todos-list">
-            {this.filterTodos().map((item) => (
+            {this.filterTodos().todos.map((item) => (
               <TasksItem todo={item} key={item.todo_id} />
             ))}
           </ul>

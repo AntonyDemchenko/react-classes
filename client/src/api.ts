@@ -1,16 +1,33 @@
-import store from "./Store/Store.ts";
+import store from "./Store/Store";
 import emitter from "./EventEmitter";
+import { type } from "os";
+
+type localStorageObjectType = {
+  accesstoken: string;
+  refreshToken: string;
+  user: string;
+};
+
+type Res = {
+  todos: Array<Todos>;
+  tokens?: localStorageObjectType;
+  user: string;
+};
+
+type Todos = {
+  title: string;
+  todo_id: string;
+  completed: boolean;
+};
 
 class Api {
   constructor() {}
 
-  getAccessToken() {
-    return JSON.parse(localStorage.getItem("token")) || "fail";
+  getAccessToken(): localStorageObjectType {
+    return JSON.parse(localStorage.getItem("token") || "fail");
   }
 
-  async getDataFromDB() {
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    // console.log(this.getAccessToken());
+  async getDataFromDB(): Promise<Res> {
     const response = await fetch("http://localhost:3000/todos", {
       method: "GET",
       headers: {
@@ -18,11 +35,11 @@ class Api {
         Authorization: this.getAccessToken().accesstoken,
       },
     });
-    // console.log(response.json());
+
     return response.json();
   }
 
-  async addNewItemDB(data) {
+  async addNewItemDB(data: { title: string }): Promise<Todos> {
     const newData = JSON.stringify({ title: data.title });
     const response = await fetch("http://localhost:3000/todos", {
       method: "POST",
@@ -33,12 +50,10 @@ class Api {
       body: newData,
     });
 
-    // data.title = " ";
-
     return response.json();
   }
 
-  async deleteItemFromDB(id) {
+  async deleteItemFromDB(id: string): Promise<Todos> {
     const response = await fetch(`http://localhost:3000/todos/${id}`, {
       method: "DELETE",
       headers: {
@@ -49,7 +64,10 @@ class Api {
     return response.json();
   }
 
-  async changeCompletedStatusOfItemDB(data) {
+  async changeCompletedStatusOfItemDB(data: {
+    id: string;
+    completed: string;
+  }): Promise<Todos> {
     const response = await fetch(`http://localhost:3000/todos/${data.id}`, {
       method: "PUT",
       headers: {
@@ -61,8 +79,7 @@ class Api {
     return response.json();
   }
 
-  async checkAllTodosDB() {
-    // console.log("ssssssssssssssssssssssssssssss");
+  async checkAllTodosDB(): Promise<void> {
     let completedSwitcher = true;
     if (store.state.todos.every((item) => item.completed === true)) {
       completedSwitcher = false;
@@ -80,7 +97,7 @@ class Api {
     );
   }
 
-  async deleteAllCheckedTodosDB() {
+  async deleteAllCheckedTodosDB(): Promise<void> {
     const response = await fetch(
       `http://localhost:3000/todos/delete-checked/all`,
       {
@@ -96,17 +113,13 @@ class Api {
 
 const api = new Api();
 
-emitter.subscribe("event:get-data-from-db", (data) =>
+emitter.subscribe("event:get-data-from-db", () =>
   api
     .getDataFromDB()
     .then((data) => {
-      console.log(data);
-
-      // console.log("uuuuuuuuuuu", data);
       store.state.todos = data.todos;
       store.state.username = data.user;
       if (data.tokens) {
-        store.state.username = data.tokens.user;
         localStorage.setItem("token", JSON.stringify(data.tokens));
       }
       emitter.emit("event: update-store", {});
@@ -116,10 +129,9 @@ emitter.subscribe("event:get-data-from-db", (data) =>
       console.error("Error:", error);
     })
 );
-emitter.subscribe("event:add-item-DB", (data) =>
-  api.addNewItemDB(data).then((data) => {
-    // console.log("RES 3", data);
 
+emitter.subscribe("event:add-item-DB", (data: { title: string }) =>
+  api.addNewItemDB(data).then((data) => {
     emitter.emit("event:add-item", {
       title: data.title,
       todo_id: data.todo_id,
@@ -128,26 +140,28 @@ emitter.subscribe("event:add-item-DB", (data) =>
   })
 );
 
-emitter.subscribe("event:delete-item", (data) =>
+emitter.subscribe("event:delete-item", (data: { id: string }) =>
   api.deleteItemFromDB(data.id).then((data) => {
     store.deleteItemFromStore(data.todo_id);
   })
 );
 
-emitter.subscribe("event:change-checkbox", (data) =>
-  api.changeCompletedStatusOfItemDB(data).then((data) => {
-    store.changeCompletedStatusOfItemStore(data);
-  })
+emitter.subscribe(
+  "event:change-checkbox",
+  (data: { id: string; completed: string }) =>
+    api.changeCompletedStatusOfItemDB(data).then((data) => {
+      store.changeCompletedStatusOfItemStore(data);
+    })
 );
 
-emitter.subscribe("event:change-all-checkboxes", (data) =>
-  api.checkAllTodosDB().then((data) => {
+emitter.subscribe("event:change-all-checkboxes", () =>
+  api.checkAllTodosDB().then(() => {
     store.checkAllTodos();
   })
 );
 
-emitter.subscribe("event:delete-all-checked", (data) =>
-  api.deleteAllCheckedTodosDB().then((data) => {
+emitter.subscribe("event:delete-all-checked", () =>
+  api.deleteAllCheckedTodosDB().then(() => {
     store.deleteAllCheckedTodos();
   })
 );

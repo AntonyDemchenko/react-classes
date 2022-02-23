@@ -18,7 +18,6 @@ type PropsType = {
 class Footer extends React.Component<PropsType> {
   constructor(props: PropsType) {
     super(props);
-    console.log(props);
   }
 
   setCountActiveTodos(): number {
@@ -34,7 +33,6 @@ class Footer extends React.Component<PropsType> {
   }
 
   render() {
-    console.log("ssssssssssssssssssssss");
     return (
       <footer
         className={this.props.todos.length === 0 ? "footer" : "footer active"}

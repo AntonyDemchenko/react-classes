@@ -177,13 +177,13 @@ export async function login(ctx) {
 }
 
 export async function checkRefreshToken(username) {
-  console.log("uuuuuu", username);
+  // console.log("uuuuuu", username);
 
   const refreshToken = await pool.query(
     "SELECT refreshtoken FROM users WHERE username = $1",
     [username]
   );
-  console.log("rt", refreshToken.rows[0].refreshtoken);
+  // console.log("rt", refreshToken.rows[0].refreshtoken);
   try {
     const refreshClaims = await jwt.verify(
       refreshToken.rows[0].refreshtoken,
@@ -200,7 +200,7 @@ export async function checkRefreshToken(username) {
     return {
       accesstoken: tokenObj.accessToken,
       refreshToken: tokenObj.refreshToken,
-      user: username,
+      // user: username,
     };
   } catch (err) {
     console.log("aaaaaaaaaaaaaaaaa", err);

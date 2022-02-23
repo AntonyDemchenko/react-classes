@@ -8,13 +8,9 @@ const keys = {
 
 class Verify {
   async jwtVerify(ctx, next) {
-    // console.log("start verify--------------------------xxxx------------");
-
     const authorization = ctx.headers["authorization"];
-    // console.log(authorization);
 
-    const user = jwt.decode(authorization);
-    console.log("----------------------------", user);
+    const user = await jwt.decode(authorization);
 
     if (!authorization) {
       ctx.throw(401);
@@ -25,8 +21,6 @@ class Verify {
     try {
       const claims = await jwt.verify(token, keys.jwtAccessSecret);
 
-      console.log(claims);
-
       if (!claims) {
         ctx.throw(401);
       }
@@ -36,8 +30,8 @@ class Verify {
       };
     } catch (err) {
       const tokens = await checkRefreshToken(user.username);
-      // console.log("tttttttttttttttttttt", tokens);
-      ctx.body = { tokens: tokens };
+
+      ctx.body = { tokens: tokens, user: user.username };
     }
 
     return next(ctx);
