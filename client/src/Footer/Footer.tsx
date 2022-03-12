@@ -1,7 +1,9 @@
 import React from "react";
 import "./Footer.css";
 import Filter from "./Filter/Filter";
-import emitter from "../EventEmitter";
+// import emitter from "../EventEmitter";
+import { connect } from "react-redux";
+import { deleteAllChecked } from "../redux/actions";
 
 type TodoType = {
   title: string;
@@ -12,12 +14,15 @@ type TodoType = {
 type PropsType = {
   todos: Array<TodoType>;
   filterType: string;
-  username: string;
+  // username: string;
+  deleteAllChecked: any;
+  ownProps?: any
 };
 
 class Footer extends React.Component<PropsType> {
   constructor(props: PropsType) {
     super(props);
+    // console.log(this.props)
   }
 
   setCountActiveTodos(): number {
@@ -29,7 +34,8 @@ class Footer extends React.Component<PropsType> {
   }
 
   deleteAllCheckedTodos(): void {
-    emitter.emit("event:delete-all-checked");
+    // emitter.emit("event:delete-all-checked");
+    this.props.deleteAllChecked()
   }
 
   render() {
@@ -56,4 +62,16 @@ class Footer extends React.Component<PropsType> {
   }
 }
 
-export default Footer;
+const mapDispatchToProps = {
+  deleteAllChecked
+}
+
+const mapStateToProps = (state: any) => {
+  // console.log("------", state)
+  return {
+    todos: state.todo.todos,
+    filterType: state.todo.filterType
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Footer);

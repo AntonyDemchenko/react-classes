@@ -1,6 +1,8 @@
 import React from "react";
 import "./TasksItem.css";
-import emitter from "../../EventEmitter";
+// import emitter from "../../EventEmitter";
+import { connect } from "react-redux";
+import { deleteTodo, checkTodo } from "../../redux/actions"
 
 type TodoType = {
   title: string;
@@ -10,6 +12,9 @@ type TodoType = {
 
 type PropsType = {
   todo: TodoType;
+  deleteTodo: any;
+  checkTodo: any;
+  ownProps?: any
 };
 
 type StateType = {
@@ -21,29 +26,34 @@ class TasksItem extends React.Component<PropsType, StateType> {
   constructor(props: PropsType) {
     super(props);
 
-    this.state = { item: props.todo };
+    this.state = { item: this.props.ownProps.todo };
   }
 
   handleClickDelete(event: React.MouseEvent<HTMLButtonElement>): void {
-    emitter.emit("event:delete-item", {
-      id: this.state.item.todo_id,
-    });
+    this.props.deleteTodo(this.state.item.todo_id)
+
   }
 
   handleOnChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    emitter.emit("event:change-checkbox", {
-      id: this.state.item.todo_id,
-      completed: this.state.item.completed,
-    });
+
+    // emitter.emit("event:change-checkbox", {
+    //   id: this.state.item.todo_id,
+    //   completed: this.state.item.completed,
+    // });
+
+    this.props.checkTodo(this.state.item.todo_id, this.state.item.completed)
+    this.setState({ item: this.props.ownProps.todo })
+
   }
 
   render() {
+    // console.log(this.props.ownProps.todo.completed)
     return (
       <li className="todos__item" item-id={this.state.item.todo_id}>
         <input
           className="todos__toggle"
           type="checkbox"
-          checked={this.state.item.completed}
+          checked={this.props.ownProps.todo.completed}
           onChange={this.handleOnChange.bind(this)}
         ></input>
         <p className="todos__title">{this.state.item.title}</p>
@@ -58,4 +68,18 @@ class TasksItem extends React.Component<PropsType, StateType> {
   }
 }
 
-export default TasksItem;
+const mapDispatchToProps = {
+  deleteTodo,
+  checkTodo,
+}
+
+const mapStateToProps: any = (state: any, ownProps: any) => {
+  // console.log("------", ownProps)
+
+  return {
+    state,
+    ownProps
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TasksItem);

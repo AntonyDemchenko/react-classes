@@ -3,9 +3,14 @@ import Footer from "../Footer/Footer";
 import Input from "../Input/Input";
 import Tasks from "../Tasks/Tasks";
 import store from "../Store/Store";
-import emitter from "../EventEmitter";
+// import emitter from "../EventEmitter";
 
-type PropsType = {};
+import { connect } from "react-redux";
+import { getAllTodos } from "../redux/actions"
+
+type PropsType = {
+  getAllTodos: any
+};
 
 type TodoType = {
   title: string;
@@ -18,9 +23,9 @@ type StateType = {
   username: string;
 };
 
-class TodoApp extends React.Component<{}, PropsType> {
+class TodoApp extends React.Component<PropsType> {
   state: StateType;
-  mounted: boolean;
+
   constructor(props: PropsType) {
     super(props);
 
@@ -30,22 +35,11 @@ class TodoApp extends React.Component<{}, PropsType> {
       username: store.state.username,
     };
 
-    this.mounted = true;
   }
 
   componentDidMount() {
-    this.mounted = true;
-    if (this.mounted) {
-      // console.log("init!");
-      emitter.emit("event:get-data-from-db");
-      emitter.subscribe("event: update-store", () => {
-        this.updateDate();
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
+    this.updateDate();
+    this.props.getAllTodos(this.state)
   }
 
   updateDate() {
@@ -54,18 +48,23 @@ class TodoApp extends React.Component<{}, PropsType> {
       filterType: store.state.filterType,
       username: store.state.username,
     });
+
   }
 
   render() {
-    // this.mounted = false;
+
     return (
       <>
         <Input />
-        <Tasks {...this.state} />
-        <Footer {...this.state} />
+        <Tasks />
+        <Footer />
       </>
     );
   }
 }
 
-export default TodoApp;
+
+const mapDispatchToProps = {
+  getAllTodos
+}
+export default connect(null, mapDispatchToProps)(TodoApp);

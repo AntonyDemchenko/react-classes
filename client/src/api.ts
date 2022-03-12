@@ -1,6 +1,3 @@
-import store from "./Store/Store";
-import emitter from "./EventEmitter";
-import { type } from "os";
 
 type localStorageObjectType = {
   accesstoken: string;
@@ -21,7 +18,7 @@ type Todos = {
 };
 
 class Api {
-  constructor() {}
+  constructor() { }
 
   getAccessToken(): localStorageObjectType {
     return JSON.parse(localStorage.getItem("token") || "fail");
@@ -39,13 +36,15 @@ class Api {
     return response.json();
   }
 
-  async addNewItemDB(data: { title: string }): Promise<Todos> {
-    const newData = JSON.stringify({ title: data.title });
+  async addNewItemDB(data: { title: string, todo_id: string, completed: boolean }): Promise<Todos> {
+    console.log(data)
+    const accesstoken = JSON.parse(localStorage.getItem("token") || "fail");
+    const newData = JSON.stringify({ title: data.title, todo_id: data.todo_id, completed: data.completed });
     const response = await fetch("http://localhost:3000/todos", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: this.getAccessToken().accesstoken,
+        Authorization: accesstoken.accesstoken,
       },
       body: newData,
     });
@@ -54,11 +53,12 @@ class Api {
   }
 
   async deleteItemFromDB(id: string): Promise<Todos> {
+    const accesstoken = JSON.parse(localStorage.getItem("token") || "fail");
     const response = await fetch(`http://localhost:3000/todos/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: this.getAccessToken().accesstoken,
+        Authorization: accesstoken.accesstoken,
       },
     });
     return response.json();
@@ -68,102 +68,47 @@ class Api {
     id: string;
     completed: string;
   }): Promise<Todos> {
+    const accesstoken = JSON.parse(localStorage.getItem("token") || "fail");
     const response = await fetch(`http://localhost:3000/todos/${data.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: this.getAccessToken().accesstoken,
+        Authorization: accesstoken.accesstoken,
       },
       body: JSON.stringify({ completed: !data.completed }),
     });
     return response.json();
   }
 
-  async checkAllTodosDB(): Promise<void> {
-    let completedSwitcher = true;
-    if (store.state.todos.every((item) => item.completed === true)) {
-      completedSwitcher = false;
-    }
-
+  async checkAllTodosDB(completedStatus: boolean): Promise<void> {
+    const accesstoken = JSON.parse(localStorage.getItem("token") || "fail");
     const response = await fetch(
-      `http://localhost:3000/todos/check-all/${completedSwitcher}`,
+      `http://localhost:3000/todos/check-all/${completedStatus}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: this.getAccessToken().accesstoken,
+          Authorization: accesstoken.accesstoken,
         },
       }
     );
   }
 
   async deleteAllCheckedTodosDB(): Promise<void> {
+    const accesstoken = JSON.parse(localStorage.getItem("token") || "fail");
     const response = await fetch(
       `http://localhost:3000/todos/delete-checked/all`,
       {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: this.getAccessToken().accesstoken,
+          Authorization: accesstoken.accesstoken,
         },
       }
     );
   }
 }
 
-const api = new Api();
-
-emitter.subscribe("event:get-data-from-db", () =>
-  api
-    .getDataFromDB()
-    .then((data) => {
-      store.state.todos = data.todos;
-      store.state.username = data.user;
-      if (data.tokens) {
-        localStorage.setItem("token", JSON.stringify(data.tokens));
-      }
-      emitter.emit("event: update-store", {});
-    })
-    .catch((error) => {
-      emitter.emit("event: check-login", { login: false });
-      console.error("Error:", error);
-    })
-);
-
-emitter.subscribe("event:add-item-DB", (data: { title: string }) =>
-  api.addNewItemDB(data).then((data) => {
-    emitter.emit("event:add-item", {
-      title: data.title,
-      todo_id: data.todo_id,
-      completed: data.completed,
-    });
-  })
-);
-
-emitter.subscribe("event:delete-item", (data: { id: string }) =>
-  api.deleteItemFromDB(data.id).then((data) => {
-    store.deleteItemFromStore(data.todo_id);
-  })
-);
-
-emitter.subscribe(
-  "event:change-checkbox",
-  (data: { id: string; completed: string }) =>
-    api.changeCompletedStatusOfItemDB(data).then((data) => {
-      store.changeCompletedStatusOfItemStore(data);
-    })
-);
-
-emitter.subscribe("event:change-all-checkboxes", () =>
-  api.checkAllTodosDB().then(() => {
-    store.checkAllTodos();
-  })
-);
-
-emitter.subscribe("event:delete-all-checked", () =>
-  api.deleteAllCheckedTodosDB().then(() => {
-    store.deleteAllCheckedTodos();
-  })
-);
+const api: any = new Api();
 
 export default api;

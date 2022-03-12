@@ -1,0 +1,8 @@
+export const CREATE_TODO = "CREATE_TODO"
+export const GET_ALL_TODOS = "GET_ALL_TODOS"
+export const SET_TODOS = "SET_TODOS"
+export const DELETE_TODO = "DELETE_TODO"
+export const CHECK_TODO = "CHECK_TODO"
+export const DELETE_ALL_CHECKED = "DELETE_ALL_CHECKED"
+export const CHECK_ALL_TODOS = "CHECK_ALL_TODOS"
+export const TOGGLE_FILTER = "TOGGLE_FILTER"

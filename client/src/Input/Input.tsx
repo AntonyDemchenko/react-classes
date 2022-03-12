@@ -1,8 +1,13 @@
 import React from "react";
 import "./Input.css";
-import emitter from "../EventEmitter";
+// import emitter from "../EventEmitter";
+import { connect } from "react-redux";
+import { createTodo } from "../redux/actions"
+import { v4 as uuidv4 } from "uuid";
 
-type PropsType = {};
+type PropsType = {
+  createTodo: any
+};
 
 type StateType = {
   inputValue: string;
@@ -23,12 +28,16 @@ class Input extends React.Component<PropsType, StateType> {
 
   handleClick(e: React.KeyboardEvent<HTMLInputElement>): void {
     if (e.key === "Enter" && (e.target as HTMLInputElement).value.trim()) {
-      emitter.emit("event:add-item-DB", {
-        title: (e.target as HTMLInputElement).value,
-      });
+
       this.setState({
         inputValue: "",
       });
+
+      this.props.createTodo({
+        title: (e.target as HTMLInputElement).value,
+        todo_id: uuidv4(),
+        completed: false
+      })
     }
   }
 
@@ -48,4 +57,8 @@ class Input extends React.Component<PropsType, StateType> {
     );
   }
 }
-export default Input;
+
+const mapDispatchToProps = {
+  createTodo
+}
+export default connect(null, mapDispatchToProps)(Input);

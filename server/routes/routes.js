@@ -23,8 +23,8 @@ router.get("get-all-todos", "/todos", async (ctx) => {
 router.post("post-todo", "/todos", (ctx) => {
   // console.log("data", ctx.request.body);
   const title = ctx.request.body.title;
-  const id = uuidv4();
-  const completed = false;
+  const id = ctx.request.body.todo_id;
+  const completed = ctx.request.body.completed;
 
   insertData(title, id, completed);
 

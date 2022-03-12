@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 import "./Registration.css";
-import emitter from "../EventEmitter";
+// import emitter from "../EventEmitter";
 
 type PropsType = {};
 

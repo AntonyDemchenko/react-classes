@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 
-import api from "./api";
+// import api from "./api";
 import emitter from "./EventEmitter";
 import { Routes, Route } from "react-router-dom";
 import LogIn from "./LogIn/LogIn";
@@ -9,15 +9,13 @@ import Registration from "./Registration/Registartion";
 import TodoApp from "./TodoApp/TodoApp";
 import Header from "./Header/Header";
 
-// import store from "./Store/Store.ts";
-
 type StateType = {
   login: string;
 };
 
 type PropsType = {};
 
-class App extends React.Component<{}, StateType, PropsType> {
+class App extends React.Component<PropsType, StateType> {
   constructor(props: PropsType) {
     super(props);
 

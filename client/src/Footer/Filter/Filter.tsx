@@ -1,15 +1,20 @@
 import React from "react";
 import "./Filter.css";
 import emitter from "../../EventEmitter";
+import { connect } from "react-redux";
+import { toggleFilter } from "../../redux/actions"
 
 type StateType = {
   buttons: Array<string>;
   selectedButton: string;
+
 };
 
-type PropsType = {};
+type PropsType = {
+  toggleFilter: any;
+};
 
-class Filter extends React.Component<{}, StateType, PropsType> {
+class Filter extends React.Component<PropsType, StateType> {
   state: StateType;
   constructor(props: PropsType) {
     super(props);
@@ -28,6 +33,8 @@ class Filter extends React.Component<{}, StateType, PropsType> {
     emitter.emit("event:change-filter-type", {
       filterType: (event.target as HTMLButtonElement).value,
     });
+
+    this.props.toggleFilter((event.target as HTMLButtonElement).value)
   }
 
   render() {
@@ -52,4 +59,8 @@ class Filter extends React.Component<{}, StateType, PropsType> {
   }
 }
 
-export default Filter;
+const mapDispatchToProps = {
+  toggleFilter
+}
+
+export default connect(null, mapDispatchToProps)(Filter);
